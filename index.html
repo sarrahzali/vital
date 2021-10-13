@@ -1,0 +1,110 @@
+<html>
+<head>
+  <script src="https://d3js.org/d3.v5.min.js"></script>
+ 	<script src="https://d3js.org/topojson.v2.min.js"></script>
+  <style>
+    @font-face { font-family: TiemposText-Regular; src: url('TiemposText-Regular.ttf'); } 
+    body{
+      font-family:'TiemposText-Regular','Lato','Helvetica', 'Calibri','Arial', sans-serif;
+      margin: 5%;
+      margin-top: 3.5%;
+      background-color: #fbfbfb;
+    }
+    p,h3{
+      margin: 0% 12% 2% 12%;
+      line-height: 1.7rem;
+    }
+
+    h1{
+        margin-bottom: 3%;
+        /* margin-top: 3%; */
+        margin-left: 10%;
+    }
+
+    #map{
+        margin-left: 15%;
+        background-color:#ededed;
+        box-shadow: gray 8px 8px 12px;
+        border-radius: 5%;
+    }
+    .upper{
+      columns: 2;
+      flex-direction:row;
+      flex-wrap: nowrap;
+      margin-left: 7%;
+    }
+
+    .map-holder{
+        margin-bottom: 5%;
+    }
+    .info{
+        margin-left: 18%;
+    }
+    .title-img{
+        margin-top: -4.5%;
+        margin-left: -5.3%; 
+        margin-right: -5.3%;
+        background-image: url("opioid.jpg");
+        min-height: 68%;
+    }
+
+  </style>
+</head>
+<body>
+<!-- <div class="title-img">
+</div> -->
+<h1> Michigan's Opioid Crisis </h1>
+
+<p>
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque ullamcorper gravida odio, id pharetra nisi viverra id. Donec arcu nunc, pharetra quis metus at, bibendum molestie libero. Nunc gravida, ligula ac iaculis suscipit, nisl eros iaculis velit, sit amet tempor nulla neque id arcu. Fusce vulputate, dolor ullamcorper auctor dapibus, ligula mauris dignissim nisl, dapibus elementum mauris turpis ac sapien. Morbi ultrices quis risus sit amet vehicula. Aenean quis tortor ipsum. Fusce consectetur enim eget nibh laoreet tempus. Aenean et nibh non nulla malesuada venenatis. Morbi euismod magna a metus euismod pharetra. Quisque id tincidunt nulla, sed luctus dolor. Sed sollicitudin interdum enim. Pellentesque scelerisque arcu eu volutpat gravida.  
+</p>
+
+<p>
+    Curabitur orci magna, tempor sed nisi in, ultrices facilisis nibh. Nam massa augue, mollis at facilisis in, imperdiet vestibulum arcu. Praesent suscipit libero eget lorem ornare egestas. Curabitur lobortis vehicula turpis non euismod. Vivamus suscipit gravida mauris, ut tincidunt leo viverra sit amet. Praesent in eros dignissim, porttitor velit eu, feugiat nunc. Aliquam erat volutpat. Ut vel dui lacinia, rutrum sem congue, vulputate nunc. Maecenas sed diam sollicitudin, facilisis metus ut, dignissim lorem. Nunc lacinia at neque ut tempor. Vivamus efficitur nisi quis mi maximus auctor. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Maecenas fermentum ullamcorper orci, in tempus erat hendrerit nec. Fusce semper tristique mollis.
+</p>
+
+<h3> The past </h3>
+<div class = "upper">
+<div class = "mapholder">
+<svg width=650 height=700 id="map"></svg>
+</div>
+<div class= "info">    
+    <p>Country: <span id="country"></span> <br/> 
+    Gini Coefficient: <span id="coeff"></span>  
+ </p>
+</div>
+</div>
+<script>
+    
+const svg = d3.select("#map");
+const width = svg.attr("width");
+const height = svg.attr("height");
+const margin = { top: 20, right: 20, bottom: 20, left:20};
+const mapWidth = width - margin.left - margin.right;
+const mapHeight = height - margin.top - margin.bottom;
+const map = svg.append("g")
+                .attr("transform","translate("+margin.left+","+margin.top+")");
+
+    const requestData = async function() {
+
+    let michigan = await d3.json("michigan.json",d3.autoType);
+    console.log(michigan);
+    
+    var projection = d3.geoMercator().fitSize([width-20, height-40],michigan);
+    var path = d3.geoPath().projection(projection);
+
+            
+    map.selectAll("path.tracts").data(michigan.features)
+       .join("path")
+       .attr("class", "tracts")
+       .attr( "fill", "#14141f" )
+       .attr("stroke", "#e6e600")
+       .attr("stroke-width", "0.015em")
+       .attr("d", path);
+       
+
+}
+requestData();
+</script>
+</body>
+</html>
